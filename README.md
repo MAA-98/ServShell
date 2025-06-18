@@ -1,6 +1,6 @@
 # ServShell
 
-A simple Unix shell implemented in C, based around client-server achitecture.
+A Unix shell daemon, implemented in C with client-server achitecture style.
 
 ## Build
 
