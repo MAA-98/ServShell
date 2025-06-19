@@ -1,6 +1,6 @@
-#ifndef SHELL_H
-#define SHELL_H
+#ifndef shell_h // If not yet defined (shell_h is just a unique identifier)
+#define shell_h // Then include the following:
 
-void shell_loop(void);
+void shell_loop(int fd); // prototype defined
 
-#endif
+#endif // End the if statement
