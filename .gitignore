@@ -2,7 +2,7 @@
 *.o
 *.out
 *.exe
-shell
+servsh
 
 # Editor swap files and macOS junk
 *~
