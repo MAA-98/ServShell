@@ -6,7 +6,7 @@
 
 #define MAX_LINE 1024
 
-void shell_loop(int fd) {
+void shell_loop(int in_fd, int out_fd, int daemon_fd) {
 	char buffer[MAX_LINE]; // declare array of MAX_LINE chars, buffer for user input
 
 	while (1) {
@@ -22,7 +22,7 @@ void shell_loop(int fd) {
 			}
 		}
 		
-		write(fd, buffer, strlen(buffer)); // Send command to daemon via the socket
-		write(fd, "\n", 1); // Send termination signal
+		write(daemon_fd, buffer, strlen(buffer)); // Send command to daemon via the socket
+		write(daemon_fd, "\n", 1); // Send termination signal
 	}
 }

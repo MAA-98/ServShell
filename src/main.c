@@ -9,21 +9,28 @@ int main() {
 	printf("Welcome to the ServShell REPL.\n"); // For now, assume execution from the terminal
 	
 	int sv[2];	 										// Init socket vector for socket file descriptors
-	if (socketpair(AF_UNIX, SOCK_STREAM, 0, sv) < 0) { 	// sys call to create two connected sockets, creates UNIX socket, stream-type, always protocol AF_UNIX, and sv is the vector for file descriptors
+	if (socketpair(AF_UNIX, SOCK_STREAM, 0, sv) < 0) { 	// Sys call to create two connected sockets, creates UNIX socket, stream-type, always protocol AF_UNIX, and sv is the vector for file descriptors
 		perror("socketpair");
-		exit(1); 										// Terminate program for now, TODO: better error handling
+		exit(1); 										// Terminate program at error for now, TODO: better error handling?
 	}
 	
-	pid_t pid = fork(); 	// Create new process, save the process id
-	if (pid < 0) { // pid < 0 if forking fails
+	pid_t pid = fork(); 	// Create new process
+	
+	if (pid < 0) { 			// pid < 0 if forking fails
 		perror("fork");
-		exit(1);
+		exit(1);			// Terminate program at error for now, TODO: better error handling?
 	}
 	
-	if (pid == 0) {			// Child: client, for now just stream text from terminal
-		close(sv[0]);		// Close your access to parent's socket side
-		shell_loop(sv[1]);
-		close(sv[1]);
+	if (pid == 0) {			// The process is the child: used as the client
+		close(sv[0]);		// Close client access to parent's socket side
+		
+		shell_loop(
+			STDIN_FILENO,   // input/output from a wrapper program or terminal if ran as CLI
+			STDOUT_FILENO,
+			sv[1] 			// file descriptor as secret address to daemon
+		);
+
+		close(sv[1]);		// Close the shell after loop
 		exit(0);
 	} else {				// Parent: shell daemon
 		close(sv[1]);
